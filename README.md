@@ -10,4 +10,5 @@ Codegen separates the generating logic into template and data model, it a little
 
 ## Example
 
-See the example of [auto factory](./example/src/main/kotlin/io/johnsonlee/codegen/example/AutoFactoryCodegen)
+See the example of [AutoFactoryCodegen.kt](./example/src/main/kotlin/io/johnsonlee/codegen/example/AutoFactoryCodegen.kt)
+
