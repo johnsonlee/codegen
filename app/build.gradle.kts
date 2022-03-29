@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("kotlin-kapt")
 }
 
 repositories {
@@ -40,6 +41,8 @@ android {
 }
 
 dependencies {
+    kapt(project(":example"))
+    implementation(project(":example"))
     implementation(kotlin("bom"))
     implementation(kotlin("stdlib"))
     implementation("androidx.core:core-ktx:1.6.0")

@@ -1,0 +1,25 @@
+/*
+ * AUTO-GENERATED, DO NOT MODIFY THIS FILE!
+ */
+package io.johnsonlee.codegen.generated;
+
+import io.johnsonlee.codegen.example.Factory;
+import io.johnsonlee.codegen.example.ObjectPool;
+
+class {{simpleName}} implements Factory<{{implementation}}> {
+
+    @Override
+    public Class<{{implementation}}> getType() {
+        return {{implementation}}.class;
+    }
+
+    @Override
+    public {{implementation}} newInstance(final ObjectPool pool) {
+        return new {{implementation}}(
+        {{#args}}
+            pool.get({{typeErasure}}.class) {{^isLast}},{{/isLast}}
+        {{/args}}
+        );
+    }
+
+}

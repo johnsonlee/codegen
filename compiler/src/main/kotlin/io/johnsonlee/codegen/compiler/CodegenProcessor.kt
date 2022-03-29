@@ -7,6 +7,7 @@ import java.lang.reflect.ParameterizedType
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.RoundEnvironment
+import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import javax.tools.FileObject
 import javax.tools.StandardLocation
@@ -72,6 +73,14 @@ abstract class CodegenProcessor<T : Annotation> : AbstractProcessor() {
         }
     }
 
+    protected fun RoundEnvironment.onEachAnnotatedElement(each: (Element) -> Unit): Set<Element> {
+        return getElementsAnnotatedWith(supportedAnnotation).onEach(each)
+    }
+
+    protected fun TypeElement.isSubtypeOf(parent: TypeElement): Boolean {
+        return processingEnv.typeUtils.isSubtype(this.asType(), parent.asType())
+    }
+
     private fun <T : Model> generateJavaSources(model: T, originatingElements: Array<TypeElement>): FileObject {
         return processingEnv.filer.createSourceFile(model.qualifiedName, *originatingElements)
     }
@@ -90,7 +99,6 @@ abstract class CodegenProcessor<T : Annotation> : AbstractProcessor() {
             *originatingElements
         )
     }
-
 
 
 }

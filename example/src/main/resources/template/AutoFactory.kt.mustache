@@ -1,0 +1,19 @@
+/*
+ * AUTO-GENERATED, DO NOT MODIFY THIS FILE!
+ */
+package io.johnsonlee.codegen.generated
+
+import io.johnsonlee.codegen.example.Factory
+import io.johnsonlee.codegen.example.ObjectPool
+
+class {{simpleName}} : Factory<{{implementation}}> {
+
+    override val type = {{implementation}}::class.java
+
+    override fun newInstance(pool: ObjectPool) = {{implementation}}(
+        {{#args}}
+            pool.get<{{type}}>() {{^isLast}},{{/isLast}}
+        {{/args}}
+    );
+
+}
