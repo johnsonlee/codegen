@@ -41,16 +41,17 @@ android {
 }
 
 dependencies {
-    kapt(project(":example"))
-    implementation(project(":example"))
+    kapt(project(":hilt"))
     implementation(kotlin("bom"))
     implementation(kotlin("stdlib"))
+    implementation(project(":annotation"))
     implementation("androidx.core:core-ktx:1.6.0")
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.activity:activity-ktx:1.3.1")
     implementation("androidx.fragment:fragment-ktx:1.3.6")
     implementation("androidx.lifecycle:lifecycle-common:2.3.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.1")
+    implementation("com.google.dagger:hilt-android:2.41")
     testImplementation("junit:junit:4.+")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     androidTestImplementation("androidx.test:runner:1.4.0")

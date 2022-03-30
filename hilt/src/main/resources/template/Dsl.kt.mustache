@@ -1,0 +1,21 @@
+/*
+ * AUTO-GENERATED, DO NOT MODIFY THIS FILE!
+ */
+package io.johnsonlee.codegen.generated
+
+import android.content.Context
+
+import dagger.hilt.EntryPoint
+import dagger.hilt.EntryPoints
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+
+val app: Context by lazy {
+    TODO()
+}
+
+{{#interfaces}}
+inline val Class<{{qualifiedName}}>.provided: {{qualifiedName}}
+    get() = EntryPoints.get(app, {{providerName}}::class.java).get()
+
+{{/interfaces}}
