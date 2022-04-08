@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:4.0.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31")
-        classpath("io.johnsonlee:sonatype-publish-plugin:1.2.0")
+        classpath("io.johnsonlee:sonatype-publish-plugin:1.5.6")
     }
 }
 
