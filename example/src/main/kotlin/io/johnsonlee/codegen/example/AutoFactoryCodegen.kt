@@ -2,7 +2,7 @@ package io.johnsonlee.codegen.example
 
 import com.google.auto.service.AutoService
 import io.johnsonlee.codegen.compiler.CodegenProcessor
-import io.johnsonlee.codegen.compiler.Language
+import io.johnsonlee.codegen.compiler.Source
 import io.johnsonlee.codegen.compiler.asElement
 import io.johnsonlee.codegen.compiler.asTypeElement
 import io.johnsonlee.codegen.compiler.error
@@ -14,6 +14,8 @@ import io.johnsonlee.codegen.template.mustache.MustacheEngine
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
+import javax.annotation.processing.SupportedSourceVersion
+import javax.lang.model.SourceVersion
 import javax.lang.model.element.AnnotationMirror
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
@@ -21,6 +23,7 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 
 @AutoService(Processor::class)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 class AutoFactoryCodegen : CodegenProcessor<AutoFactory>() {
 
     private val mustache: TemplateEngine by lazy(::MustacheEngine)
@@ -34,7 +37,7 @@ class AutoFactoryCodegen : CodegenProcessor<AutoFactory>() {
     ) {
         roundEnv.onEachAnnotatedElement { element ->
             val implementation = element.asTypeElement()
-            val mirror = element.getAnnotationMirror<AutoFactory>()
+            val mirror = element.getAnnotationMirror<AutoFactory>() ?: return@onEachAnnotatedElement
             mirror.value.takeIf(Set<DeclaredType>::isNotEmpty)?.map(DeclaredType::asTypeElement)?.onEach { api ->
                 if (checkImplementation(implementation, api)) {
                     generateFactory(implementation, mirror)
@@ -82,7 +85,7 @@ class AutoFactoryCodegen : CodegenProcessor<AutoFactory>() {
         generate(
             "template/AutoFactory",
             AutoFactoryModel(implementation.qualifiedName.toString(), args),
-            Language.KOTLIN
+            Source.Kotlin
         )
     }
 }

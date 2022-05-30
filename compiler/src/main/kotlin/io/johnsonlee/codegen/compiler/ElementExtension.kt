@@ -7,6 +7,8 @@ import javax.lang.model.element.TypeElement
 
 fun Element.asTypeElement(): TypeElement = MoreElements.asType(this)
 
-inline fun <reified T : Annotation> Element.getAnnotationMirror(): AnnotationMirror {
-    return MoreElements.getAnnotationMirror(this, T::class.java).get()
+inline fun <reified T : Annotation> Element.getAnnotationMirror(): AnnotationMirror? {
+    return MoreElements.getAnnotationMirror(this, T::class.java).takeIf {
+        it.isPresent
+    }?.get()
 }

@@ -1,5 +1,7 @@
 package io.johnsonlee.codegen.compiler
 
+import java.io.PrintWriter
+import java.io.StringWriter
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.AnnotationMirror
 import javax.lang.model.element.Element
@@ -26,5 +28,9 @@ fun ProcessingEnvironment.error(msg: String, element: Element, annotation: Annot
 }
 
 fun ProcessingEnvironment.fatal(e: Throwable) {
-    messager.printMessage(Diagnostic.Kind.ERROR, "FATAL ERROR: ${e.stackTraceToString()}")
+    val stack = StringWriter().run {
+        e.printStackTrace(PrintWriter(this))
+        toString()
+    }
+    messager.printMessage(Diagnostic.Kind.ERROR, "FATAL ERROR: $stack")
 }

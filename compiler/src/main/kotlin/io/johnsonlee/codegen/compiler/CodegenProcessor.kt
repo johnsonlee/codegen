@@ -22,6 +22,7 @@ abstract class CodegenProcessor<T : Annotation> : AbstractProcessor() {
 
     protected val supportedAnnotation: Class<T> by lazy {
         (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments.map {
+            @Suppress("UNCHECKED_CAST")
             it as Class<T>
         }.first()
     }
@@ -60,15 +61,20 @@ abstract class CodegenProcessor<T : Annotation> : AbstractProcessor() {
 
     protected open fun onPostProcessing(processingEnv: ProcessingEnvironment) = Unit
 
-    protected fun <T : Model> generate(template: String, model: T, lang: Language = Language.JAVA) {
+    protected fun <T : Model> generate(template: String, model: T, output: Output) {
         val originatingElements = model.references.map {
             processingEnv.elementUtils.getTypeElement(it)
         }.toTypedArray()
-        when (lang) {
-            Language.JAVA -> generateJavaSources(model, originatingElements)
-            else -> generateSources(lang, model, originatingElements)
-        }.openWriter().use { writer ->
-            engine.render("${template}.${lang.extension}.${engine.extension.lowercase()}", model, writer)
+        when (output) {
+            is Source -> when (output) {
+                 Source.Java -> generateJavaSources(model, originatingElements)
+                else -> generateSources(output, model, originatingElements)
+            }
+            is Resource -> generateResource(output, model, originatingElements)
+            else -> null
+        }?.openWriter()?.use { writer ->
+            val ext = if (output.extension.isNotBlank()) ".${output.extension}" else ""
+            engine.render("${template}${ext}.${engine.extension.toLowerCase()}", model, writer)
             writer.close()
         }
     }
@@ -86,7 +92,7 @@ abstract class CodegenProcessor<T : Annotation> : AbstractProcessor() {
     }
 
     private fun <T : Model> generateSources(
-        lang: Language,
+        source: Source,
         model: T,
         originatingElements: Array<TypeElement>
     ): FileObject {
@@ -95,10 +101,20 @@ abstract class CodegenProcessor<T : Annotation> : AbstractProcessor() {
         return processingEnv.filer.createResource(
             StandardLocation.SOURCE_OUTPUT,
             pkg,
-            "${name}.${lang.extension}",
+            "${name}.${source.extension}",
             *originatingElements
         )
     }
 
+    private fun <T : Model> generateResource(
+        resource: Resource,
+        model: T,
+        originatingElements: Array<TypeElement>
+    ): FileObject = processingEnv.filer.createResource(
+        StandardLocation.CLASS_OUTPUT,
+        "",
+        "${resource.prefix}${File.separator}${model.qualifiedName}",
+        *originatingElements
+    )
 
 }
